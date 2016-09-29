@@ -39,6 +39,7 @@ StMyJpsiEffMaker::StMyJpsiEffMaker(const char *name, TChain *chain, Int_t uncert
 	mEtaMin = -1.;
 	mEtaMax = 1.;
 	mdEta = 0.1;
+   
 
 	for(int i=0;i<20;i++)
 		for(int j=0;j<6;j++){
@@ -55,8 +56,10 @@ StMyJpsiEffMaker::StMyJpsiEffMaker(const char *name, TChain *chain, Int_t uncert
 StMyJpsiEffMaker::~StMyJpsiEffMaker() 
 { }
 
-//_____________________________________________________________
-
+//______________________________________________________________
+void StMyJpsiEffMaker::Clear(Option_t* option)
+{
+}
 //_____________________________________________________________
 Int_t StMyJpsiEffMaker::Init()
 {
@@ -195,15 +198,15 @@ Int_t StMyJpsiEffMaker::Init()
 	hJpsiPhiInvMPtCS1->Sumw2();
 
 
-	hMBdsmAdcInvMPt = new TH3F("hMBdsmAdcInvMPt","hMBdsmAdcInvMPt",65,0,65,40,2,4,120,0,30);
-	hMBdsmAdcInvMPtBG = new TH3F("hMBdsmAdcInvMPtBG","hMBdsmAdcInvMPtBG",65,0,65,40,2,4,120,0,30);
-	hMBAdcInvMPt = new TH3F("hMBAdcInvMPt","hMBAdcInvMPt",800,0,800,40,2,4,120,0,30);
-	hMBAdcInvMPtBG = new TH3F("hMBAdcInvMPtBG","hMBAdcInvMPtBG",800,0,800,40,2,4,120,0,30);
-	hMBdsmAdcInvMPt->Sumw2();
-	hMBdsmAdcInvMPtBG->Sumw2();
-	hMBAdcInvMPt->Sumw2();
-	hMBAdcInvMPtBG->Sumw2();
-
+//	hMBdsmAdcInvMPt = new TH3F("hMBdsmAdcInvMPt","hMBdsmAdcInvMPt",65,0,65,40,2,4,120,0,30);
+//	hMBdsmAdcInvMPtBG = new TH3F("hMBdsmAdcInvMPtBG","hMBdsmAdcInvMPtBG",65,0,65,40,2,4,120,0,30);
+//	hMBAdcInvMPt = new TH3F("hMBAdcInvMPt","hMBAdcInvMPt",800,0,800,40,2,4,120,0,30);
+//	hMBAdcInvMPtBG = new TH3F("hMBAdcInvMPtBG","hMBAdcInvMPtBG",800,0,800,40,2,4,120,0,30);
+//	hMBdsmAdcInvMPt->Sumw2();
+//	hMBdsmAdcInvMPtBG->Sumw2();
+//	hMBAdcInvMPt->Sumw2();
+//	hMBAdcInvMPtBG->Sumw2();
+/*
 	hHT0dsmAdcInvMPt = new TH3F("hHT0dsmAdcInvMPt","hHT0dsmAdcInvMPt",65,0,65,40,2,4,120,0,30);
 	hHT0dsmAdcInvMPtBG = new TH3F("hHT0dsmAdcInvMPtBG","hHT0dsmAdcInvMPtBG",65,0,65,40,2,4,120,0,30);
 	hHT0AdcInvMPt = new TH3F("hHT0AdcInvMPt","hHT0AdcInvMPt",800,0,800,40,2,4,120,0,30);
@@ -230,7 +233,7 @@ Int_t StMyJpsiEffMaker::Init()
 	hHT2dsmAdcInvMPtBG->Sumw2();
 	hHT2AdcInvMPt->Sumw2();
 	hHT2AdcInvMPtBG->Sumw2();
-
+*/
 	hJpsiCosThetaPhiPt1 = new TH3F("hJpsiCosThetaPhiPt1","hJpsiCosThetaPhiPt1",40,-1,1,40,-TMath::Pi(),TMath::Pi(),120,0,30);
 	hMBJpsiCosThetaPhiPt1 = new TH3F("hMBJpsiCosThetaPhiPt1","hMBJpsiCosThetaPhiPt1",40,-1,1,40,-TMath::Pi(),TMath::Pi(),120,0,30);
 	hHT0JpsiCosThetaPhiPt1 = new TH3F("hHT0JpsiCosThetaPhiPt1","hHT0JpsiCosThetaPhiPt1",40,-1,1,40,-TMath::Pi(),TMath::Pi(),120,0,30);
@@ -254,14 +257,30 @@ Int_t StMyJpsiEffMaker::Init()
 	hHT0JpsiCosThetaPhiPtCS1->Sumw2();
 	hHT1JpsiCosThetaPhiPtCS1->Sumw2();
 	hHT2JpsiCosThetaPhiPtCS1->Sumw2();
+	Clear("");
 	return kStOK;
 }
+
+//_____________________________________________________________
+Int_t StMyJpsiEffMaker::InitRun(Int_t runnumber)
+{
+	return kStOK;
+}
+
+//_____________________________________________________________
+Int_t StMyJpsiEffMaker::FinishRun(Int_t runnumber)
+{
+
+	return kStOK;
+}
+
 
 //-------------------------------------------------------------
 Int_t StMyJpsiEffMaker::Finish()
 {
 	f->Write();
 	f->Close();
+	Clear("");
 	return kStOK;
 }
 //_____________________________________________________________
@@ -273,8 +292,6 @@ Int_t StMyJpsiEffMaker::Finish()
 //_____________________________________________________________
 Int_t StMyJpsiEffMaker::Make()
 {
-	const Int_t mDsmAdcCut[4] = {11, 15, 18, 25};
-
 	//LOG_INFO<<"Test start of StMyJpsiEffMaker "<<endm;
 	myChain->GetEntry(evCnt++);
 	mRan->SetSeed(evCnt);
@@ -597,39 +614,39 @@ Int_t StMyJpsiEffMaker::Make()
 
 				if((isEmc1==kTRUE || isTOF1) || (isEmc2==kTRUE || isTOF2)){  //  or passed tof cuts 
 					if((isTpc1 && isTpc2) || (isTpc2 && isEmc1) || (isTpc1 && isEmc2) || (isEmc1 && isEmc2)) {
-						hMBdsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
-						hMBdsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
-						hMBAdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
-						hMBAdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//						hMBdsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//						hMBdsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
+//						hMBAdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//						hMBAdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 					}
 					if((isEmc1 && isTpc2 && isHt1[0])||(isEmc2 && isTpc1 && isHt2[0]) || (isEmc1 && isEmc2 && isHt1[0]) || (isEmc1 && isEmc2 && isHt2[0])) {
 						if(isHt1[0]){
-							hHT0dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
-							hHT0AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);
+//							hHT0dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT0AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);
 						}	
 						if(isHt2[0]){
-							hHT0dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
-							hHT0AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT0dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
+//							hHT0AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 						}
 					}
 					if((isEmc1 && isTpc2 && isHt1[1])||(isEmc2 && isTpc1 && isHt2[1]) || (isEmc1 && isEmc2 && isHt1[1]) || (isEmc1 && isEmc2 && isHt2[1])) {
 						if(isHt1[1]){
-							hHT1dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
-							hHT1AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT1dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT1AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 						}
 						if(isHt2[1]){
-							hHT1dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
-							hHT1AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT1dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
+//							hHT1AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 						}
 					}
 					if((isEmc1 && isTpc2 && isHt1[2])||(isEmc2 && isTpc1 && isHt2[2]) || (isEmc1 && isEmc2 && isHt1[2]) || (isEmc1 && isEmc2 && isHt2[2])) {
 						if(isHt1[2]){
-							hHT2dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
-							hHT2AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT2dsmAdcInvMPt->Fill(dsmAdc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT2AdcInvMPt->Fill(adc01,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 						}
 						if(isHt2[2]){
-							hHT2dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
-							hHT2AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
+//							hHT2dsmAdcInvMPt->Fill(dsmAdc02,JpsiRc.M(),JpsiRc.Pt(),weight1);
+//							hHT2AdcInvMPt->Fill(adc02,JpsiRc.M(),JpsiRc.Pt(),weight1);	
 						}
 					}
 				}
