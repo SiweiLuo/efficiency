@@ -170,7 +170,7 @@ Int_t StMyJpsiEffMaker::Init()
 	inf.close();
 
 	//hMCElectronPt = new TH1D("mcElectronPt","input electron pt",300,0,30);
-    testhist = new TH1F("test","test",30,0,30);
+	testhist = new TH1F("test","test",30,0,30);
 
 	hCommonhitsvsRCPt = new TH2D("hCommonhitsvsRCPt","commonhits vs RC pT;tpc commonHits;RC p_{T} (GeV/c)",50,0,50,300,0,300);
 	hCommonhitsvsMCPt = new TH2D("hCommonhitsvsMCPt","commonhits vs MC pT;tpc commonHits;MC p_{T} (GeV/c)",50,0,50,300,0,300);
@@ -314,7 +314,10 @@ Int_t StMyJpsiEffMaker::Make()
 			if(mElectron2->pGeantId!=160) continue;
 			if(mElectron2->mcId<0) continue;
 			if(mElectron2->mcId==mElectron->mcId) continue;
-			if((mElectron->geantId!=2 || mElectron2->geantId!=3) && (mElectron->geantId!=3 || mElectron2->geantId!=2)) continue;	
+			//			if((mElectron->geantId!=2 || mElectron2->geantId!=3) && (mElectron->geantId!=3 || mElectron2->geantId!=2)) continue;	
+			if(mElectron->geantId==2 && mElectron2->geantId==3){;}
+			else if(mElectron->geantId==3 && mElectron2->geantId==2){;}
+			else {continue;}
 
 			Double_t deta = mElectron->mcY - mElectron2->mcY;
 			Double_t dphi = mElectron->mcPhi - mElectron2->mcPhi;
@@ -376,12 +379,12 @@ Int_t StMyJpsiEffMaker::Make()
 			Double_t weight1 = (A+Aplus-Aminus)*TMath::Power(1+(JpsiMc.Pt()/(B+Bplus-Bminus))*(JpsiMc.Pt()/(B+Bplus-Bminus)), -6)*(JpsiMc.Pt());
 			if(rapidity)weight1 = weight1*TMath::Exp(-0.5*(JpsiMc.Rapidity()*JpsiMc.Rapidity())/(1.416*1.416));
 
-				float deltaeta = mElectron->mcEta -mElectron2->mcEta;
-				float deltaphi = mElectron->mcPhi - mElectron2->mcPhi;
-				while(deltaphi>2*TMath::Pi()) deltaphi -= 2.*TMath::Pi();
-				while(deltaphi<0) deltaphi += 2.*TMath::Pi();
-				while(deltaphi>TMath::Pi()) deltaphi = deltaphi -2*TMath::Pi();
-				double deltaR =0;
+			float deltaeta = mElectron->mcEta -mElectron2->mcEta;
+			float deltaphi = mElectron->mcPhi - mElectron2->mcPhi;
+			while(deltaphi>2*TMath::Pi()) deltaphi -= 2.*TMath::Pi();
+			while(deltaphi<0) deltaphi += 2.*TMath::Pi();
+			while(deltaphi>TMath::Pi()) deltaphi = deltaphi -2*TMath::Pi();
+			double deltaR =0;
 			if(JpsiMc.Rapidity()<mPairYCut[0] || JpsiMc.Rapidity()>mPairYCut[1]) continue;
 
 			TLorentzVector Proton1(0.,0.,100.,100),Proton2(0.,0.,-100.,100);						
@@ -477,8 +480,8 @@ Int_t StMyJpsiEffMaker::Make()
 					cout<<"         "<<myGaus_1->GetParameter(1)<<"         "<<myGaus_1->GetParameter(2)<<endl;
 					nsigma1 = myGaus_1->GetRandom();
 				}
-				bool isEmc1 = kFALSE,isTpc1 = kFALSE,isTOF1 = kFALSE,isHt1[4];
-				for(int iht=0;iht<4;iht++) isHt1[iht] = kFALSE;
+				bool isEmc1 = kFALSE,isTpc1 = kFALSE,isTOF1 = kFALSE,isTrg1[4];
+				for(int iht=0;iht<4;iht++) isTrg1[iht] = kFALSE;
 				int charge1 = 0;
 				if(mElectron->geantId==2) charge1 = 1;
 				if(mElectron->geantId==3) charge1 = -1;
@@ -517,8 +520,8 @@ Int_t StMyJpsiEffMaker::Make()
 					myGaus->SetParameters(1,polpara[0][0]+polpara[0][1]*pt2,polpara[1][0]+polpara[1][1]*pt2);
 					nsigma2=myGaus->GetRandom();
 				}
-				bool isTpc2 = kFALSE, isEmc2 = kFALSE,isTOF2 = kFALSE,isHt2[4];
-				for(int iht=0;iht<4;iht++) isHt2[iht]=kFALSE;
+				bool isTpc2 = kFALSE, isEmc2 = kFALSE,isTOF2 = kFALSE,isTrg2[4];
+				for(int iht=0;iht<4;iht++) isTrg2[iht]=kFALSE;
 				int charge2 = 0;
 				if(mElectron2->geantId==2) charge2 = 1;
 				if(mElectron2->geantId==3) charge2 = -1;
@@ -534,6 +537,8 @@ Int_t StMyJpsiEffMaker::Make()
 				betaGaus2->SetParameters(1,beta2para[0][0]+meanbeta*beta2para[0][1],beta2para[1][0]+sigmabeta*beta2para[1][1]);
 				beta2=betaGaus2->GetRandom();
 
+				//				cout<<"nHitsFit1="<<nHitsFit1<<"nMaxPts1="<<nMaxPts1<<"dca1="<<dca1<<"eta1="<<eta1<<"nsigma1="<<nsigma1<<"nHitsdedx1="<<nHitsdedx1<<"pt1="<<pt1<<endl;
+
 				if(nHitsFit1>=mTpceHitsFitCut &&
 						nHitsFit1/nMaxPts1>=mTpceHitsRatio &&
 						dca1<=mTpceDcaCut &&
@@ -544,10 +549,31 @@ Int_t StMyJpsiEffMaker::Make()
 						pt1<30.){								
 					isTpc1 = kTRUE;
 					testhist->Fill(1);
-					if(pe1>0.3 && pe1<1.5 && pt1>mEmcePtMin && nsigma1>=mTpcenSigmaElectronCut[0] && nsigma1<=mTpcenSigmaElectronCut[1]) isEmc1 = kTRUE;
-					if(beta1>=mTpceBetaCut[0] && beta1<=mTpceBetaCut[1] && nsigma1>=mTpcenSigmaElectronCut[0] && nsigma1<=mTpcenSigmaElectronCut[1] && mRan->Uniform(0,1)<tofEff1)isTOF1 = kTRUE;
+					if(pe1>0.3 && pe1<1.5 && pt1>mEmcePtMin && nsigma1>=mTpcenSigmaElectronCut[0] && nsigma1<=mTpcenSigmaElectronCut[1]) {
+						isEmc1 = kTRUE;
+						testhist->Fill(6);	
+					}
+					cout<<"beta1="<<beta1<<"nsigma1="<<nsigma1<<"rand="<<mRan->Uniform()<<endl;
+					if(beta1>=mTpceBetaCut[0] && beta1<=mTpceBetaCut[1] && nsigma1>mTpcenSigmaElectronCut[0] && nsigma1<mTpcenSigmaElectronCut[1] && mRan->Uniform(0,1)<tofEff1){
+						isTOF1 = kTRUE;
+						testhist->Fill(7);
+					}
+					cout<<"pt1="<<pt1<<"dsmAdc="<<dsmAdc01<<"e1="<<e1<<endl;
+					if(pt1>2.5 && dsmAdc01>11 && e1>0){
+						isTrg1[0] = kTRUE;
+						testhist->Fill(9);
+					}
+					if(pt1>3.6 && dsmAdc01>15 && e1>0){
+						isTrg1[1] = kTRUE;
+						testhist->Fill(10);
+					}
+					if(pt1>4.3 && dsmAdc01>18 && e1>0){
+						isTrg1[2] = kTRUE;
+						testhist->Fill(11);
+					}
 				}
 
+				//				cout<<"nHitsFit2="<<nHitsFit2<<"nMaxPts2="<<nMaxPts2<<"dca2="<<dca2<<"eta2="<<eta2<<"nsigma2="<<nsigma2<<"nHitsdedx2="<<nHitsdedx2<<"pt2="<<pt2<<endl;
 				if(nHitsFit2>=mTpceHitsFitCut &&
 						nHitsFit2/nMaxPts2>=mTpceHitsRatio &&
 						dca2<=mTpceDcaCut &&
@@ -559,15 +585,16 @@ Int_t StMyJpsiEffMaker::Make()
 					isTpc2 = kTRUE;
 					testhist->Fill(2);
 					if(pe2>0.3 && pe2<1.5 && pt2>mEmcePtMin && nsigma2>=mTpcenSigmaElectronCut[0] && nsigma2<=mTpcenSigmaElectronCut[1]) isEmc2 = kTRUE;
-					if(beta2>=mTpceBetaCut[0] && beta2<=mTpceBetaCut[1] && nsigma2>=mTpcenSigmaElectronCut[0] && nsigma2<=mTpcenSigmaElectronCut[1] && mRan->Uniform(0,1)<tofEff2)isTOF2 = kTRUE;
+					if(beta2>=mTpceBetaCut[0] && beta2<=mTpceBetaCut[1] && nsigma2>mTpcenSigmaElectronCut[0] && nsigma2<mTpcenSigmaElectronCut[1] && mRan->Uniform(0,1)<tofEff2)isTOF2 = kTRUE;
+
+					if(pt2>2.5 && dsmAdc02>11 && e2>0) isTrg2[0] = kTRUE;
+					if(pt2>3.6 && dsmAdc02>15 && e2>0) isTrg2[1] = kTRUE;
+					if(pt2>4.3 && dsmAdc02>18 && e2>0) isTrg2[2] = kTRUE;
 				}		
 
-				if(adc01>mEmceAdcCut[0]*dsmadcfactor && pt1>2.5 && dsmAdc01>11) isHt1[0] = kTRUE;
-				if(adc02>mEmceAdcCut[0]*dsmadcfactor && pt2>2.5 && dsmAdc02>11) isHt2[0] = kTRUE;
-				if(adc01>mEmceAdcCut[1]*dsmadcfactor && pt1>3.6 && dsmAdc01>15) isHt1[1] = kTRUE;
-				if(adc02>mEmceAdcCut[1]*dsmadcfactor && pt2>3.6 && dsmAdc02>15) isHt2[1] = kTRUE;
-				if(adc01>mEmceAdcCut[2]*dsmadcfactor && pt1>4.3 && dsmAdc01>18) isHt1[2] = kTRUE;
-				if(adc02>mEmceAdcCut[2]*dsmadcfactor && pt2>4.3 && dsmAdc02>18) isHt2[2] = kTRUE;
+				//			if(adc01>mEmceAdcCut[0]*dsmadcfactor && pt1>2.5 && dsmAdc01>11){
+				//				if(adc01>mEmceAdcCut[1]*dsmadcfactor && pt1>3.6 && dsmAdc01>15){
+				//				if(adc01>mEmceAdcCut[2]*dsmadcfactor && pt1>4.3 && dsmAdc01>18){
 				/*
 				   if(isTpc1 == kTRUE && isTpc2 == kTRUE) {
 				   hJpsiCosThetaInvMPt->Fill(costheta,JpsiRc.M(),JpsiRc.Pt(),weight1);
@@ -583,50 +610,47 @@ Int_t StMyJpsiEffMaker::Make()
 				   }
 				   */
 				if((isEmc1 || isTOF1) || (isEmc2 || isTOF2)){  //  or passed tof cuts 
-//					if(JpsiRc.M()>3.0 && JpsiRc.M()<3.2 && isTpc1 && isTpc2){
+					if(JpsiRc.M()>3.0 && JpsiRc.M()<3.2 && isTpc1 && isTpc2){
 						if((isTpc1 && isTpc2) || (isTpc2 && isEmc1) || (isTpc1 && isEmc2) || (isEmc1 && isEmc2)) {
 							hMBJpsiCosThetaPhiPt1->Fill(costheta,dphi_HX,JpsiMc.Pt(),weight1);
 							hMBJpsiCosThetaPhiPtCS1->Fill(TMath::Cos(dtheta_CS),dphi_CS,JpsiMc.Pt(),weight1);
 						}
-						if((isEmc1 && isTpc2 && isHt1[0])||(isEmc2 && isTpc1 && isHt2[0]) || (isEmc1 && isEmc2 && isHt1[0]) || (isEmc1 && isEmc2 && isHt2[0])) {
-							testhist->Fill(3);
+						if((isEmc1 && isTpc2 && isTrg1[0])||(isEmc2 && isTpc1 && isTrg2[0]) || (isEmc1 && isEmc2 && isTrg1[0]) || (isEmc1 && isEmc2 && isTrg2[0])) {
 							hHT0JpsiCosThetaPhiPt1->Fill(costheta,dphi_HX,JpsiMc.Pt(),weight1);
 							hHT0JpsiCosThetaPhiPtCS1->Fill(TMath::Cos(dtheta_CS),dphi_CS,JpsiMc.Pt(),weight1);
 						}
-						if((isEmc1 && isTpc2 && isHt1[1])||(isEmc2 && isTpc1 && isHt2[1]) || (isEmc1 && isEmc2 && isHt1[1]) || (isEmc1 && isEmc2 && isHt2[1])) {
-							testhist->Fill(4);
+						if((isEmc1 && isTpc2 && isTrg1[1])||(isEmc2 && isTpc1 && isTrg2[1]) || (isEmc1 && isEmc2 && isTrg1[1]) || (isEmc1 && isEmc2 && isTrg2[1])) {
 							hHT1JpsiCosThetaPhiPt1->Fill(costheta,dphi_HX,JpsiMc.Pt(),weight1);
 							hHT1JpsiCosThetaPhiPtCS1->Fill(TMath::Cos(dtheta_CS),dphi_CS,JpsiMc.Pt(),weight1);
 						}
-						if((isEmc1 && isTpc2 && isHt1[2])||(isEmc2 && isTpc1 && isHt2[2]) || (isEmc1 && isEmc2 && isHt1[2]) || (isEmc1 && isEmc2 && isHt2[2])) {
-							testhist->Fill(5);
+						if((isEmc1 && isTpc2 && isTrg1[2])||(isEmc2 && isTpc1 && isTrg2[2]) || (isEmc1 && isEmc2 && isTrg1[2]) || (isEmc1 && isEmc2 && isTrg2[2])) {
 							hHT2JpsiCosThetaPhiPt1->Fill(costheta,dphi_HX,JpsiMc.Pt(),weight1);
 							hHT2JpsiCosThetaPhiPtCS1->Fill(TMath::Cos(dtheta_CS),dphi_CS,JpsiMc.Pt(),weight1);
 						}
-//					}
+					}
 				}
 			}	
-		}
-	}
-	return kStOk;
-}
+			}
+			}
+			return kStOk;
+			}
 
-Double_t StMyJpsiEffMaker::getTOFeff(int charge, double pt, double eta){
-	int ieta = (eta-mEtaMin)/mdEta;
-	if(eta>mEtaMin && eta<mEtaMax){
-		if(ieta<0||ieta>20) cout<<"WARN: eta bin is not within [-1,1]"<<endl;
-		if(charge==1){
-			function_tofeff->SetParameters(mTofEffParsPos[ieta][0]+tofmatching*mTofEffParsPos[ieta][1],mTofEffParsPos[ieta][2]+tofmatching*mTofEffParsPos[ieta][3],mTofEffParsPos[ieta][4]+tofmatching*mTofEffParsPos[ieta][5]);
-		}else if(charge==-1){
-			function_tofeff->SetParameters(mTofEffParsNeg[ieta][0]+tofmatching*mTofEffParsNeg[ieta][1],mTofEffParsNeg[ieta][2]+tofmatching*mTofEffParsNeg[ieta][3],mTofEffParsNeg[ieta][4]+tofmatching*mTofEffParsNeg[ieta][5]);
-		}
+			Double_t StMyJpsiEffMaker::getTOFeff(int charge, double pt, double eta){
+				int ieta = (eta-mEtaMin)/mdEta;
+				if(eta>mEtaMin && eta<mEtaMax){
+					if(ieta<0||ieta>20) cout<<"WARN: eta bin is not within [-1,1]"<<endl;
+					if(charge==1){
+						function_tofeff->SetParameters(mTofEffParsPos[ieta][0]+tofmatching*mTofEffParsPos[ieta][1],mTofEffParsPos[ieta][2]+tofmatching*mTofEffParsPos[ieta][3],mTofEffParsPos[ieta][4]+tofmatching*mTofEffParsPos[ieta][5]);
+					}else if(charge==-1){
+						function_tofeff->SetParameters(mTofEffParsNeg[ieta][0]+tofmatching*mTofEffParsNeg[ieta][1],mTofEffParsNeg[ieta][2]+tofmatching*mTofEffParsNeg[ieta][3],mTofEffParsNeg[ieta][4]+tofmatching*mTofEffParsNeg[ieta][5]);
+					}
 
-		if(charge==1 || charge==-1){
-			return function_tofeff->Eval(pt);
-		}else{
-			return 0.;
-		}
-	}else{
-		return 0.;
-	}
-}
+					if(charge==1 || charge==-1){
+						return function_tofeff->Eval(pt);
+					}else{
+						return 0.;
+					}
+				}else{
+					return 0.;
+				}
+			}
