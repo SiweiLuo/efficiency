@@ -559,15 +559,15 @@ Int_t StMyJpsiEffMaker::Make()
 						testhist->Fill(7);
 					}
 					cout<<"pt1="<<pt1<<"dsmAdc="<<dsmAdc01<<"e1="<<e1<<endl;
-					if(pt1>2.5 && dsmAdc01>11 && e1>0){
+					if(pt1>2.5 && dsmAdc01>11 && e1>0 && adc01>mEmceAdcCut[0]){
 						isTrg1[0] = kTRUE;
 						testhist->Fill(9);
 					}
-					if(pt1>3.6 && dsmAdc01>15 && e1>0){
+					if(pt1>3.6 && dsmAdc01>15 && e1>0 && adc01>mEmceAdcCut[1]){
 						isTrg1[1] = kTRUE;
 						testhist->Fill(10);
 					}
-					if(pt1>4.3 && dsmAdc01>18 && e1>0){
+					if(pt1>4.3 && dsmAdc01>18 && e1>0 && adc01>mEmceAdcCut[2]){
 						isTrg1[2] = kTRUE;
 						testhist->Fill(11);
 					}
@@ -587,9 +587,9 @@ Int_t StMyJpsiEffMaker::Make()
 					if(pe2>0.3 && pe2<1.5 && pt2>mEmcePtMin && nsigma2>=mTpcenSigmaElectronCut[0] && nsigma2<=mTpcenSigmaElectronCut[1]) isEmc2 = kTRUE;
 					if(beta2>=mTpceBetaCut[0] && beta2<=mTpceBetaCut[1] && nsigma2>mTpcenSigmaElectronCut[0] && nsigma2<mTpcenSigmaElectronCut[1] && mRan->Uniform(0,1)<tofEff2)isTOF2 = kTRUE;
 
-					if(pt2>2.5 && dsmAdc02>11 && e2>0) isTrg2[0] = kTRUE;
-					if(pt2>3.6 && dsmAdc02>15 && e2>0) isTrg2[1] = kTRUE;
-					if(pt2>4.3 && dsmAdc02>18 && e2>0) isTrg2[2] = kTRUE;
+					if(pt2>2.5 && dsmAdc02>11 && e2>0 && adc02>mEmceAdcCut[0]) isTrg2[0] = kTRUE;
+					if(pt2>3.6 && dsmAdc02>15 && e2>0 && adc02>mEmceAdcCut[1]) isTrg2[1] = kTRUE;
+					if(pt2>4.3 && dsmAdc02>18 && e2>0 && adc02>mEmceAdcCut[2]) isTrg2[2] = kTRUE;
 				}		
 
 				//			if(adc01>mEmceAdcCut[0]*dsmadcfactor && pt1>2.5 && dsmAdc01>11){
