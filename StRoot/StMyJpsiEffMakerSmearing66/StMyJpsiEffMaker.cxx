@@ -607,20 +607,20 @@ Int_t StMyJpsiEffMaker::Make()
 						isTOF2 = kTRUE;
 						testhist->Fill(21);
 						}
-					if(pt2>2.5 && dsmAdc02>11 && e2>0 && adc02>mEmceAdcCut[0] && pe2>0.3 && pe2<1.5){ 
-//					if(pt2>2.5 && dsmAdc02>11 && e2>0 && pe2>0.3 && pe2<1.5){ 
+//					if(pt2>2.5 && dsmAdc02>11 && e2>0 && adc02>mEmceAdcCut[0] && pe2>0.3 && pe2<1.5){ 
+					if(pt2>2.5 && dsmAdc02>11 && e2>0 && pe2>0.3 && pe2<1.5){ 
 						cout<<"nHitsFit2="<<nHitsFit2<<"nMaxPts2="<<nMaxPts2<<"dca2="<<dca2<<"eta2="<<eta2<<"nsigma2="<<nsigma2<<"nHitsdedx2="<<nHitsdedx2<<"pt2="<<pt2<<endl;
 						isTrg2[0] = kTRUE;
 						testhist->Fill(12);
 					}
 		
-					if(pt2>3.6 && dsmAdc02>15 && e2>0 && adc02>mEmceAdcCut[1] && pe2>0.3 && pe2<1.5){
-//					if(pt2>3.6 && dsmAdc02>15 && e2>0 && pe2>0.3 && pe2<1.5){
+//					if(pt2>3.6 && dsmAdc02>15 && e2>0 && adc02>mEmceAdcCut[1] && pe2>0.3 && pe2<1.5){
+					if(pt2>3.6 && dsmAdc02>15 && e2>0 && pe2>0.3 && pe2<1.5){
 						   	isTrg2[1] = kTRUE;
 							testhist->Fill(13);
 						}
-					if(pt2>4.3 && dsmAdc02>18 && e2>0 && adc02>mEmceAdcCut[2] && pe2>0.3 && pe2<1.5) {
-//					if(pt2>4.3 && dsmAdc02>18 && e2>0 && pe2>0.3 && pe2<1.5) {
+//					if(pt2>4.3 && dsmAdc02>18 && e2>0 && adc02>mEmceAdcCut[2] && pe2>0.3 && pe2<1.5) {
+					if(pt2>4.3 && dsmAdc02>18 && e2>0 && pe2>0.3 && pe2<1.5) {
 						isTrg2[2] = kTRUE;
 						testhist->Fill(14);
 					}
@@ -647,7 +647,7 @@ Int_t StMyJpsiEffMaker::Make()
 				cout<<"isEmc1"<<isEmc1<<"isEmc2"<<isEmc2<<"isTpc1"<<isTpc1[0]<<"isTpc2"<<isTpc2[0]<<"isTrg1[0]"<<isTrg1[0]<<"isTrg2[0]"<<isTrg2[0]<<endl;
 				testhist->Fill(26);	
 //				if((isEmc1 || isTOF1) || (isEmc2 || isTOF2)){  //  or passed tof cuts 
-					if(JpsiRc.M()>3.0 && JpsiRc.M()<3.2 && isTpc1 && isTpc2){
+					if(JpsiRc.M()>3.0 && JpsiRc.M()<3.2){
 						if((isTpc1[0] && isTpc2[0]) || (isTpc2[0] && isEmc1) || (isTpc1[0] && isEmc2) || (isEmc1 && isEmc2)) {
 							hMBJpsiCosThetaPhiPt1->Fill(costheta,dphi_HX,JpsiMc.Pt(),weight1);
 							hMBJpsiCosThetaPhiPtCS1->Fill(TMath::Cos(dtheta_CS),dphi_CS,JpsiMc.Pt(),weight1);
