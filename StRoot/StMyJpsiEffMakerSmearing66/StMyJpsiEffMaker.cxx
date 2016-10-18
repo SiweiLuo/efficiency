@@ -552,7 +552,7 @@ Int_t StMyJpsiEffMaker::Make()
 						nHitsFit1/nMaxPts1>=mTpceHitsRatio &&
 						dca1<=mTpceDcaCut &&
 						eta1>=mTpceEtaCut[0] && eta1<=mTpceEtaCut[1] &&
-						nsigma1>mTpcenSigmaElectronCut[0] && nsigma1<mTpcenSigmaElectronCut[1] &&
+						nsigma1>mTpceLoosenSigmaElectronCut[0] && nsigma1<mTpceLoosenSigmaElectronCut[1] &&
 						nHitsdedx1>=mTpceHitsDedxCut && 
 						mElectron->tpcCommonHits>=10 && 
 						pt1<30.){
@@ -594,7 +594,7 @@ Int_t StMyJpsiEffMaker::Make()
 						nHitsFit2/nMaxPts2>=mTpceHitsRatio &&
 						dca2<=mTpceDcaCut &&
 						eta2>=mTpceEtaCut[0] && eta2<=mTpceEtaCut[1] &&
-						nsigma2>=mTpcenSigmaElectronCut[0] && nsigma2<=mTpcenSigmaElectronCut[1] &&
+						nsigma2>=mTpceLoosenSigmaElectronCut[0] && nsigma2<=mTpceLoosenSigmaElectronCut[1] &&
 						nHitsdedx2>=mTpceHitsDedxCut &&
 						mElectron2->tpcCommonHits>=10 &&
 						pt2<30.){
