@@ -549,13 +549,15 @@ Int_t StMyJpsiEffMaker::Make()
 				//				cout<<"nHitsFit1="<<nHitsFit1<<"nMaxPts1="<<nMaxPts1<<"dca1="<<dca1<<"eta1="<<eta1<<"nsigma1="<<nsigma1<<"nHitsdedx1="<<nHitsdedx1<<"pt1="<<pt1<<endl;
 
 				if(nHitsFit1>=mTpceHitsFitCut &&
-						nHitsFit1/nMaxPts1>=mTpceHitsRatio &&
-						dca1<=mTpceDcaCut &&
+//						nHitsFit1/nMaxPts1>=mTpceHitsRatio &&
+//						dca1<=mTpceDcaCut &&
+						dca1<mTpceDcaCut &&
 						eta1>=mTpceEtaCut[0] && eta1<=mTpceEtaCut[1] &&
 						nsigma1>mTpceLoosenSigmaElectronCut[0] && nsigma1<mTpceLoosenSigmaElectronCut[1] &&
 						nHitsdedx1>=mTpceHitsDedxCut && 
-						mElectron->tpcCommonHits>=10 && 
-						pt1<30.){
+//						mElectron->tpcCommonHits>=10 && 
+//						pt1<30.){
+						1){
 					for(int iht=0;iht<4;iht++){					
 						if(pt1>=mTpcePtCut[iht] && p1>=mTpcePCut[iht])isTpc1[iht] = kTRUE;
 					}
@@ -591,13 +593,15 @@ Int_t StMyJpsiEffMaker::Make()
 				}
 
 				if(nHitsFit2>=mTpceHitsFitCut &&
-						nHitsFit2/nMaxPts2>=mTpceHitsRatio &&
-						dca2<=mTpceDcaCut &&
+//						nHitsFit2/nMaxPts2>=mTpceHitsRatio &&
+//						dca2<=mTpceDcaCut &&
+						dca2<mTpceDcaCut &&
 						eta2>=mTpceEtaCut[0] && eta2<=mTpceEtaCut[1] &&
 						nsigma2>=mTpceLoosenSigmaElectronCut[0] && nsigma2<=mTpceLoosenSigmaElectronCut[1] &&
 						nHitsdedx2>=mTpceHitsDedxCut &&
-						mElectron2->tpcCommonHits>=10 &&
-						pt2<30.){
+//						mElectron2->tpcCommonHits>=10 &&
+//						pt2<30.){
+						1){
 					for(int iht=0;iht<4;iht++){
 						if(pt2>=mTpcePtCut[iht] && p2>=mTpcePCut[iht])isTpc2[iht] = kTRUE;
 					}
