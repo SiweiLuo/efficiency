@@ -16,7 +16,9 @@ Double_t mTpceHitsFitCut = 20;
 const Double_t mTpceHitsDedxCut = 11;
 const Double_t mTpceHitsRatio = 0.52;
 
-const Double_t mTpceLoosenSigmaElectronCut[2] = {-3,3.};
+//const Double_t mTpceLoosenSigmaElectronCut[2] = {-3,3.};
+const Double_t mTpceLoosenSigmaElectronCut[2] = {-2.5,3.};
+
 const Double_t mTpcenSigmaElectronCut[2] = {-1.9,3};
 
 const Double_t mTpceBetaCut[2] = {0.97,1.03};
