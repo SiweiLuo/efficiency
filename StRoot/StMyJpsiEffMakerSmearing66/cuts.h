@@ -11,9 +11,9 @@ const Int_t mCommonHitCut = 10;
 const Double_t mTpcePtCut[4] = {0.2,0.2,0.2,0.2};
 const Double_t mTpcePCut[4] = {0.2,0.2,0.2,0.2};
 const Double_t mTpceEtaCut[2] = {-1,1};
-const Double_t mTpceDcaCut = 1.;
+Double_t mTpceDcaCut = 1.;
 Double_t mTpceHitsFitCut = 20;
-const Double_t mTpceHitsDedxCut = 11;
+Double_t mTpceHitsDedxCut = 11;
 const Double_t mTpceHitsRatio = 0.52;
 
 //const Double_t mTpceLoosenSigmaElectronCut[2] = {-3,3.};
